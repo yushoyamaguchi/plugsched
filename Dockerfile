@@ -7,8 +7,8 @@ RUN yum install gcc-8.5.0-10.1.0.3.an8 --allowerasing -y
 RUN yum install gcc-c++-8.5.0-10.1.0.3.an8 --allowerasing -y
 RUN yum install gcc-plugin-devel-8.5.0-10.1.0.3.an8 --allowerasing -y
 RUN yum install libstdc++-static-8.5.0-10.1.0.3.an8 --allowerasing -y
-RUN yum install python3 python3-pip libyaml-devel -y
-RUN pip3 install --user sh docopt pyyaml colorlog
+RUN yum install python3 python3-pip python3-pyyaml libyaml-devel -y
+RUN pip3 install --user sh docopt colorlog
 RUN yum install make bison flex \
                 systemd git \
                 elfutils-libelf-devel openssl openssl-devel \
