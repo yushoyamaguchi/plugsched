@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
 From openanolis/anolisos:latest
 
-
+RUN yum install epel-release -y
 RUN yum install python3 python3-pip gcc gcc-c++ libyaml-devel -y
 RUN pip3 install --user sh docopt pyyaml colorlog
 RUN yum install make bison flex \
