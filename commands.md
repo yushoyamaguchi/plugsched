@@ -3,3 +3,6 @@ sudo podman run --privileged -itd --name=plugsched -v /work:/work -v /usr/src/ke
 
 # installing debug-info
 sudo dnf debuginfo-install kernel-$(uname -r)
+
+# dwarf
+sudo dnf install dwarves
