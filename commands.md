@@ -9,3 +9,6 @@ sudo dnf debuginfo-install kernel-$(uname -r)
 
 # dwarf
 sudo dnf install dwarves
+
+# mock
+useradd -s /sbin/nologin mockbuild

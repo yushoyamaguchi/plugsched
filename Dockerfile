@@ -15,7 +15,7 @@ RUN yum install make bison flex \
                 elfutils-devel-static \
                 glibc-static zlib-static \
                 platform-python-devel dwarves \
-                rpm-build rsync bc perl -y && \
+                rpm-build rsync bc perl mock -y && \
     yum install gcc-python-plugin-0.17-1.4.an8 --allowerasing --enablerepo=Plus -y && \
     yum clean all
 
