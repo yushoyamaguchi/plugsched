@@ -12,3 +12,6 @@ sudo dnf install dwarves
 
 # mock
 useradd -s /sbin/nologin mockbuild
+
+# rpmbuild
+rpmbuild --define '%_topdir /tmp/tmptc8gdack' --define '%__python /usr/bin/python3' -rp --nodeps kernel-5.10.23-200.fc33.src.rpm
