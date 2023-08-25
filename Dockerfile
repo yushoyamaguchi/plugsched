@@ -15,9 +15,10 @@ RUN yum install make bison flex \
                 elfutils-devel-static \
                 glibc-static zlib-static \
                 platform-python-devel dwarves \
-                rpm-build rsync bc perl mock -y && \
+                rpm-build rsync bc perl mock vim -y && \
     yum install gcc-python-plugin-0.17-1.4.an8 --allowerasing --enablerepo=Plus -y && \
     yum clean all
 
 COPY . /usr/local/lib/plugsched/
 RUN ln -s /usr/local/lib/plugsched/cli.py /usr/local/bin/plugsched-cli
+RUN useradd -s /sbin/nologin mockbuild
