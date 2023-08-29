@@ -46,6 +46,7 @@ import uuid
 import stat
 import os
 import re
+import subprocess
 
 def glob(pattern, _cwd='.'):
     return _glob(os.path.join(_cwd, pattern))
@@ -243,24 +244,54 @@ if __name__ == '__main__':
     if arguments['extract_src']:
         kernel_src_rpm = arguments['<kernel_src_rpm>']
         target_dir = arguments['<target_dir>']
+        
+        os.makedirs(target_dir, exist_ok=True)
 
-        rpmbuild_root = mkdtemp()
-        sh.rpmbuild('--define', '%%_topdir %s' % rpmbuild_root,
-                    '--define', '%%__python %s' % '/usr/bin/python3',
-                    '-rp', '--nodeps', kernel_src_rpm)
+        # Temporary directory for rpm2cpio extraction
+        rpm2cpio_root = mkdtemp()
+        cleanup_needed = True
 
-        src = glob('kernel*/linux*', rpmbuild_root + '/BUILD/')
+        # Extract files from RPM to temporary directory
+        subprocess.run(f"rpm2cpio {kernel_src_rpm} | (cd {rpm2cpio_root} && cpio -idmv)", shell=True)
 
-        if len(src) != 1:
-            logging.fatal("find multi kernel source, fuzz ...")
+        # Identify the tar and patch files
+        tar_files = glob(f'{rpm2cpio_root}/linux-*.tar.xz')
+        patch_files = glob(f'{rpm2cpio_root}/patch-*.xz')
 
-        rsync(src[0] + '/', target_dir + '/', archive=True, verbose=True, delete=True)
+        if len(tar_files) != 1:
+            logging.fatal("Found multiple or zero tar files, exiting...")
+        else:
+            tar_file = tar_files[0]
 
-        # certificates for CONFIG_MODULE_SIG_KEY & CONFIG_SYSTEM_TRUSTED_KEYS
-        for pem in glob('*.pem', rpmbuild_root + '/SOURCES/'):
-            sh.cp(pem, target_dir + '/certs', force=True)
+            # Uncompress and extract the kernel source
+            subprocess.run(f"tar -xf {tar_file} -C {rpm2cpio_root}", shell=True)
 
-        sh.rm(rpmbuild_root, recursive=True, force=True)
+            # Extract base name to use for patching
+            base_name = tar_file.split('/')[-1].replace('.tar.xz', '')
+
+            # Check for available patch files
+            patch_files = glob(f'{rpm2cpio_root}/patch-*.xz')
+            
+            if len(patch_files) == 1:
+                patch_file = patch_files[0]
+                # Apply the patch
+                subprocess.run(f"unxz -c {patch_file} | (cd {rpm2cpio_root}/{base_name} && patch -p1)", shell=True)
+            elif len(patch_files) > 1:
+                logging.warning("Found multiple patch files, skipping patching...")
+            
+            # Copy the (possibly patched) kernel source to the target directory using tar
+            subprocess.run(f"tar -cf - -C {rpm2cpio_root}/{base_name} . | tar -xf - -C {target_dir}", shell=True)
+
+            # Copy certificates (.pem files)
+            for pem in glob(f'{rpm2cpio_root}/path/to/certificates/*.pem'):
+                sh.copy(pem, f"{target_dir}/certs/")
+
+            cleanup_needed = False
+
+        # Cleanup: remove the temporary directory
+        if cleanup_needed:
+            sh.rmtree(rpm2cpio_root)
+
 
     elif arguments['init']:
         release_kernel = arguments['<release_kernel>']
@@ -309,4 +340,5 @@ if __name__ == '__main__':
         makefile = os.path.join(work_dir, 'Makefile')
         plugsched = Plugsched(work_dir, vmlinux, makefile)
         plugsched.cmd_build()
+
 

@@ -14,7 +14,7 @@ RUN yum install make bison flex \
                 elfutils-libelf-devel openssl openssl-devel \
                 elfutils-devel-static \
                 glibc-static zlib-static \
-                platform-python-devel dwarves rpmdevtools rpm-build rpm2cpio \
+                platform-python-devel dwarves rpmdevtools rpm-build \
                 rpm-build rsync bc perl mock vim -y && \
     yum install gcc-python-plugin-0.17-1.4.an8 --allowerasing --enablerepo=Plus -y && \
     yum clean all
