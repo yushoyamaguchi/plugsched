@@ -180,6 +180,30 @@ class Plugsched(object):
                         return False
 
             return True
+        
+    def modify_file(self, file_path):   
+        with open(file_path, 'r') as file:
+            lines = file.readlines()
+
+        # ファイルの行を変更
+        for i, line in enumerate(lines):
+            if "LLVM_OBJCOPY=${OBJCOPY} ${PAHOLE} -J ${1}" in line:
+                lines[i] = "LLVM_OBJCOPY=${OBJCOPY} ${PAHOLE} -J --btf_encode_force ${1}\n"
+
+        # 変更内容をファイルに書き戻す
+        with open(file_path, 'w') as file:
+            file.writelines(lines)
+
+        
+    def edit_link_vmlinux_sh(self):
+        target_file = os.path.join(self.work_dir, "scripts/link-vmlinux.sh")
+        if os.path.exists(target_file):
+            self.modify_file(target_file)
+            print(f"Modified {target_file}")
+        else:
+            print(f"{target_file} does not exist!")
+        
+          
 
     def cmd_init(self, kernel_src, sym_vers, kernel_config):
         self.create_sandbox(kernel_src)
@@ -187,7 +211,9 @@ class Plugsched(object):
         self.plugsched_sh.cp(kernel_config, self.work_dir + '/.config', force=True)
         self.plugsched_sh.cp(self.makefile, self.work_dir, force=True)
         self.plugsched_sh.cp(self.vmlinux,  self.work_dir, force=True)
-
+        self.edit_link_vmlinux_sh()
+        
+        
         logging.info('Patching kernel with pre_extract patch')
         self.apply_patch('pre_extract.patch')
         self.extract()
