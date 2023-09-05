@@ -164,7 +164,7 @@ class Plugsched(object):
 
     def create_sandbox(self, kernel_src):
         logging.info('Creating mod build directory structure')
-        rsync(kernel_src + '/', self.work_dir, archive=True, verbose=True, delete=True, exclude='.git', filter=':- .gitignore')
+        rsync(kernel_src + '/', self.work_dir, archive=True, verbose=True, delete=True, exclude='.git')
         self.mod_sh.mkdir(self.mod_path, parents=True)
         self.mod_sh.mkdir(self.tmp_dir, parents=True)
 
