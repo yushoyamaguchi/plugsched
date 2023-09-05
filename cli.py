@@ -242,55 +242,25 @@ if __name__ == '__main__':
     arguments = docopt(__doc__)
 
     if arguments['extract_src']:
-        kernel_src_rpm = arguments['<kernel_src_rpm>']
+        kernel_src = arguments['<kernel_src_rpm>']
         target_dir = arguments['<target_dir>']
         
         os.makedirs(target_dir, exist_ok=True)
 
-        # Temporary directory for rpm2cpio extraction
-        rpm2cpio_root = mkdtemp()
-        cleanup_needed = True
+         # ディレクトリでv5.10にチェックアウト
+    subprocess.run(["git", "checkout", "v5.10"], cwd=kernel_src, check=True)
 
-        # Extract files from RPM to temporary directory
-        subprocess.run(f"rpm2cpio {kernel_src_rpm} | (cd {rpm2cpio_root} && cpio -idmv)", shell=True)
+    # kernel_src_rpm内のすべてのファイルとディレクトリをtarget_dirにコピー
+    for item in os.listdir(kernel_src):
+        source_item = os.path.join(kernel_src, item)
+        target_item = os.path.join(target_dir, item)
 
-        # Identify the tar and patch files
-        tar_files = glob(f'{rpm2cpio_root}/linux-*.tar.xz')
-        patch_files = glob(f'{rpm2cpio_root}/patch-*.xz')
-
-        if len(tar_files) != 1:
-            logging.fatal("Found multiple or zero tar files, exiting...")
+        if os.path.isdir(source_item):
+            sh.copytree(source_item, target_item)
         else:
-            tar_file = tar_files[0]
+            sh.copy2(source_item, target_item)
 
-            # Uncompress and extract the kernel source
-            subprocess.run(f"tar -xf {tar_file} -C {rpm2cpio_root}", shell=True)
 
-            # Extract base name to use for patching
-            base_name = tar_file.split('/')[-1].replace('.tar.xz', '')
-
-            # Check for available patch files
-            patch_files = glob(f'{rpm2cpio_root}/patch-*.xz')
-            
-            if len(patch_files) == 1:
-                patch_file = patch_files[0]
-                # Apply the patch
-                subprocess.run(f"unxz -c {patch_file} | (cd {rpm2cpio_root}/{base_name} && patch -p1)", shell=True)
-            elif len(patch_files) > 1:
-                logging.warning("Found multiple patch files, skipping patching...")
-            
-            # Copy the (possibly patched) kernel source to the target directory using tar
-            subprocess.run(f"tar -cf - -C {rpm2cpio_root}/{base_name} . | tar -xf - -C {target_dir}", shell=True)
-
-            # Copy certificates (.pem files)
-            for pem in glob(f'{rpm2cpio_root}/path/to/certificates/*.pem'):
-                sh.copy(pem, f"{target_dir}/certs/")
-
-            cleanup_needed = False
-
-        # Cleanup: remove the temporary directory
-        if cleanup_needed:
-            sh.rmtree(rpm2cpio_root)
 
 
     elif arguments['init']:
