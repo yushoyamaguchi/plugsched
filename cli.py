@@ -248,20 +248,10 @@ if __name__ == '__main__':
         os.makedirs(target_dir, exist_ok=True)
 
          # ディレクトリでv5.10にチェックアウト
-    subprocess.run(["git", "checkout", "v5.10"], cwd=kernel_src, check=True)
+        subprocess.run(["git", "checkout", "v5.10"], cwd=kernel_src, check=True)
 
-    # kernel_src_rpm内のすべてのファイルとディレクトリをtarget_dirにコピー
-    for item in os.listdir(kernel_src):
-        source_item = os.path.join(kernel_src, item)
-        target_item = os.path.join(target_dir, item)
-
-        if os.path.isdir(source_item):
-            sh.copytree(source_item, target_item)
-        else:
-            sh.copy2(source_item, target_item)
-
-
-
+        # kernel_src_rpm内のすべてのファイルとディレクトリをtarget_dirにコピー
+        rsync(kernel_src+'/' , target_dir, archive=True, verbose=True, delete=True, exclude='.git')
 
     elif arguments['init']:
         release_kernel = arguments['<release_kernel>']
