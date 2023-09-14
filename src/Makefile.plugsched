@@ -14,7 +14,7 @@ plugsched: scripts prepare
 
 collect: modules_prepare
 	$(MAKE) CFLAGS_KERNEL="$(GCC_PLUGIN_FLAGS)" \
-		CFLAGS_MODULE="$(GCC_PLUGIN_FLAGS)" $(build-dir)
+		CFLAGS_MODULE="$(GCC_PLUGIN_FLAGS)" $(vmlinux-dirs)
 analyze:
 	find $(srctree)/arch -name "compressed" -type d | xargs -I% find % -name "*.c.boundary" -exec rm -f {} \;
 	rm -f $(srctree)/drivers/firmware/efi/libstub/*.c.boundary
