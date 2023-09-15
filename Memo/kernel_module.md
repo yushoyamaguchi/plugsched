@@ -1,2 +1,7 @@
 # なぜrpmを使うか
 module-contlib/scheduler-installerのスクリプトで、rpmコマンドでの動作を規定してるっぽい
+
+# 動作
+scheduler.specをspecファイルとして指定した上でrpmbuildをすると、specファイルの中身がスクリプト的に実行される
+
+koへのビルド自体は、結局src/Makefileの中に記述してある
