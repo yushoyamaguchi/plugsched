@@ -35,3 +35,15 @@ sudo podman cp ./cli.py plugsched:/usr/local/lib/plugsched/cli.py
 > >    LLVM_OBJCOPY=${OBJCOPY} ${PAHOLE} -J --btf_encode_force ${1}
 ```
 
+# insmod
+```sudo rpm -ivh /work5/scheduler-xxx.rpm```
+After that,
+```sudo insmod /run/plugsched/scheduler.ko```
+
+
+
+
+# enable FEATURE PLUGSCHED_TEST
+echo "PLUGSCHED_TEST" | sudo tee /sys/kernel/debug/sched_features > /dev/null
+
+
