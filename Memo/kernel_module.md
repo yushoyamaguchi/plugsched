@@ -1,0 +1,2 @@
+# なぜrpmを使うか
+module-contlib/scheduler-installerのスクリプトで、rpmコマンドでの動作を規定してるっぽい
