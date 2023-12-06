@@ -37,8 +37,16 @@ sudo podman cp ./cli.py plugsched:/usr/local/lib/plugsched/cli.py
 
 # insmod
 ```sudo rpm -ivh /work5/scheduler-xxx.rpm```
-After that,
+There may be insmod error because of permission denied.
+In the case, after that,
 ```sudo insmod /run/plugsched/scheduler.ko```
+
+## modprobe
+```
+sudo cp /run/plugsched/scheduler.ko /lib/modules/$(uname -r)/kernel/
+sudo depmod -a
+sudo modprobe --force-vermagic scheduler
+```
 
 
 
