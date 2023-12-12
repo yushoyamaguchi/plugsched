@@ -35,6 +35,11 @@ sudo podman cp ./cli.py plugsched:/usr/local/lib/plugsched/cli.py
 > >    LLVM_OBJCOPY=${OBJCOPY} ${PAHOLE} -J --btf_encode_force ${1}
 ```
 
+# In container
+```
+cp /work5/scheduler/working/rpmbuild/RPMS/x86_64/scheduler-xxx-5.10.23-200.fc33.yyy.x86_64.rpm /work5/scheduler-xxx.rpm
+```
+
 # insmod
 ```sudo rpm -ivh /work5/scheduler-xxx.rpm```
 There may be insmod error because of permission denied.
