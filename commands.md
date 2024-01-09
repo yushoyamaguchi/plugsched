@@ -37,6 +37,8 @@ sudo podman cp ./cli.py plugsched:/usr/local/lib/plugsched/cli.py
 
 # In container
 ```
+plugsched-cli build /work5/scheduler
+
 cp /work5/scheduler/working/rpmbuild/RPMS/x86_64/scheduler-xxx-5.10.23-200.fc33.yyy.x86_64.rpm /work5/scheduler-xxx.rpm
 ```
 

@@ -1,0 +1,4 @@
+#登録
+sudo insmod test_module.ko
+sudo rmmod test_module.ko
+dmesg
