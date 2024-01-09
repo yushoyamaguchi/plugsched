@@ -1,7 +1,7 @@
 #include <linux/module.h>
 #include <linux/init.h>
 
-#include "/work5/scheduler/kernel/sched/mod/sched_mod.h"
+
 
 MODULE_LICENSE("Dual BSD/GPL");
 
@@ -10,6 +10,9 @@ static int test_init(void)
 {
     printk("Hello my first_module\n");
     //test_print_sched();
+
+    extern void print_test(void);
+    print_test();
     return 0;
 }
 

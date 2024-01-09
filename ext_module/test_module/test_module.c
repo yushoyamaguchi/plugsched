@@ -1,22 +1,28 @@
 #include <linux/module.h>
 #include <linux/init.h>
 
-#include "/work5/scheduler/kernel/sched/mod/sched_mod.h"
+
 
 MODULE_LICENSE("Dual BSD/GPL");
 
 
 static int test_init(void)
 {
-    printk("Hello my first_module\n");
-    //test_print_sched();
+    printk("Hello my test_module\n");
     return 0;
 }
 
 static void test_exit(void)
 {
-    printk("Bye bye my first_module\n");
+    printk("Bye bye my test_module\n");
 }
+
+void print_test(void)
+{
+    printk("print_test\n");
+}
+
+EXPORT_SYMBOL(print_test);
 
 module_init(test_init);
 module_exit(test_exit);
