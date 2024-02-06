@@ -55,6 +55,11 @@ sudo depmod -a
 sudo modprobe --force-vermagic scheduler
 ```
 
+# unload
+sudo rpm -e scheduler-xxx
+sudo podman stop plugsched
+sudo podman rm plugsched
+
 
 
 
