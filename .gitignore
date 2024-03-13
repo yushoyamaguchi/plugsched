@@ -5,3 +5,4 @@ tools/symbol_resolve/symbol_resolve
 *.pyc
 *.swp
 put_rt*
+dmesg_exec*
