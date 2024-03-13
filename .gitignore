@@ -4,3 +4,4 @@ tools/symbol_resolve/symbol_resolve
 *.o
 *.pyc
 *.swp
+put_rt*
